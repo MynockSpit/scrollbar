@@ -1,0 +1,101 @@
+/* Styling CSS -- this is only an example, change it however you please */
+
+.scroll_content {
+    width: 325px;
+    height: 400px;   
+
+    font: 13px Arial, Helvetica, sans-serif;
+    
+    border: 2px solid #a5a5a5;
+
+    box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.40), 
+        0px 0px 20px 10px rgba(0, 0, 0, 0.2);
+    
+    margin: 40px;
+}
+
+.scrollbar {
+    border: 1px solid #c9c9c9;
+}
+
+.scroller {
+    background: rgb(193, 193, 193);
+
+    margin: auto;
+
+    border-radius: 6px;
+}
+.scroller:hover, .example .scroller:active {
+    background: rgb(125, 125, 125);
+}
+
+/* CSS for the content and scrollbar when vertical is specified or when horizontal is NOT specified */
+.scroll_content.vertical .scrollable, .scroll_content:not(.horizontal) .scrollable {
+    top: 0px;
+    width: 90%;
+    padding: 5px;
+}
+
+.scroll_content.vertical.no_scrollbar .scrollable, .scroll_content.no_scrollbar:not(.horizontal) .scrollable {
+    width: auto;
+    left: 0px; right: 0px;
+}
+
+.scroll_content.vertical .scrollbar, .scroll_content:not(.horizontal) .scrollbar {
+    top: 0px;
+    bottom: 0px;
+
+    right: 0px;
+
+    width: 10px;
+}
+.scroll_content.vertical .scroller, .scroll_content:not(.horizontal) .scroller {
+    left: 0px; 
+    right: 0px;
+
+    width: 80%;
+    height: 25%;
+}
+
+/* CSS for the content and scrollbar when horizontal is specified */
+.scroll_content.horizontal .scrollable {
+    height: 90%;
+    white-space: nowrap;
+    padding: 10px;
+}
+
+.scroll_content.horizontal.no_scrollbar .scrollable {
+    height: auto;
+    top: 0px; left: 0px;
+}
+
+.scroll_content.horizontal .scrollbar {
+    bottom: 0px;
+
+    left: 0px;
+    right: 0px;
+    
+    height: 10px;
+}
+.scroll_content.horizontal .scroller {
+    width: 25%;
+    height: 80%;
+    
+    top: 0px; 
+    bottom: 0px;
+}
+
+/* Base CSS (You probably shouldn't change this) */
+.scroll_content {
+    position: relative;
+    overflow: hidden;
+}
+.scrollable {
+    position: absolute;
+}
+.scrollbar {
+    position: absolute;
+}
+.scroller {
+    position: absolute;
+}
