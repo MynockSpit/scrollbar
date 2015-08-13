@@ -4,15 +4,16 @@ Further, you can add the class "horizontal" to the element to make it a horizont
 
 ** Installing **
 
-Add scrollbar.css and scrollbar.js to your website, and then link them to the page you want with a scrollbar.
+Add scrollbar.css and scrollbar.js to your web server, and then add them to the <head> tag. Example:
 
     <link rel="stylesheet" type="text/css" href="scrollbar.css">
     <script type="text/javascript" src="scrollbar.js"></script>
 
-Once done, you can add the classes you wish to customize it.
+Then, add 'class="scroll_content"' to the element you wish to have scrollable content. This will make the element have a vertical scrolling scrollbar.
+
+You can further customize it by adding the classes you wish to customize it.
     
-    vertical - Forces the content to scroll vertically
-    horizontal - Forces the content to scroll horizontally
+    horizontal - Changes the scrollbar from vertical to horizontal
     no_scrollbar - Prevents a scrollbar from appearing in the content box
 
 ** Customizing **
@@ -25,5 +26,6 @@ CSS classes used:
     scrollbar
     scroller
     no_scrollbar
-    vertical
     horizontal
+    
+The CSS file used is of course completely modifyable.
