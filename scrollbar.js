@@ -13,7 +13,6 @@ var javaScript_scrollbar = {
         scrollbar: "scrollbar",
         scroller: "scroller",
         noscrollbar: "no_scrollbar",
-        vertical: "vertical",
         horizontal: "horizontal"
     },
 
@@ -110,10 +109,7 @@ var javaScript_scrollbar = {
 
         var classes = javaScript_scrollbar.classes;
 
-        if (container.className.match(new RegExp(classes.vertical))) 
-            return javaScript_scrollbar.scrollingDirection = "vertical";
-
-        else if (container.className.match(new RegExp(classes.horizontal))) 
+        if (container.className.match(new RegExp(classes.horizontal))) 
             return javaScript_scrollbar.scrollingDirection = "horizontal";
 
         else return javaScript_scrollbar.scrollingDirection = "vertical";

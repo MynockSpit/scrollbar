@@ -29,19 +29,20 @@
     background: rgb(125, 125, 125);
 }
 
-/* CSS for the content and scrollbar when vertical is specified or when horizontal is NOT specified */
-.scroll_content.vertical .scrollable, .scroll_content:not(.horizontal) .scrollable {
+/* CSS for the content and scrollbar when vertical is specified (when horizontal is NOT specified) */
+
+.scroll_content:not(.horizontal) .scrollable {
     top: 0px;
     width: 90%;
     padding: 5px;
 }
 
-.scroll_content.vertical.no_scrollbar .scrollable, .scroll_content.no_scrollbar:not(.horizontal) .scrollable {
+.scroll_content.no_scrollbar:not(.horizontal) .scrollable {
     width: auto;
     left: 0px; right: 0px;
 }
 
-.scroll_content.vertical .scrollbar, .scroll_content:not(.horizontal) .scrollbar {
+.scroll_content:not(.horizontal) .scrollbar {
     top: 0px;
     bottom: 0px;
 
@@ -49,13 +50,14 @@
 
     width: 10px;
 }
-.scroll_content.vertical .scroller, .scroll_content:not(.horizontal) .scroller {
+.scroll_content:not(.horizontal) .scroller {
     left: 0px; 
     right: 0px;
 
     width: 80%;
     height: 25%;
 }
+
 
 /* CSS for the content and scrollbar when horizontal is specified */
 .scroll_content.horizontal .scrollable {
