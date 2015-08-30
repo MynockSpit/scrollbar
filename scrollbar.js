@@ -62,7 +62,6 @@ var javaScript_scrollbar = {
 
             if (!container.className.match(new RegExp(classes.noscrollbar))) {
                 // If no-scrollbar is NOT set...
-
                 if (!scrollbar) {
                     // Build the scrollbar if it doesn't exist
 
@@ -83,10 +82,11 @@ var javaScript_scrollbar = {
                     scrollbar.appendChild(scroller); 
                 }
 
+
                 if (javaScript_scrollbar.checkDirection(container, content) == "vertical") {
-                    scroller.style.height = ((scrollbar.offsetHeight * scrollbar.offsetHeight) / content.offsetHeight);
+                    scroller.style.height = ((scrollbar.offsetHeight * scrollbar.offsetHeight) / content.scrollHeight);
                 } else {
-                    scroller.style.width = ((scrollbar.offsetWidth * scrollbar.offsetWidth) / content.offsetWidth);
+                    scroller.style.width = ((scrollbar.offsetWidth * scrollbar.offsetWidth) / content.scrollWidth);
                 }
             }
 
@@ -142,33 +142,37 @@ var javaScript_scrollbar = {
 
             // Get the size of the content box
 
-            contentSize = (scrollingDirection == "vertical") ?
-                -(content.offsetHeight) + (container.offsetHeight) : -(content.offsetWidth) + (container.offsetWidth);
+            if (scrollingDirection == "horizontal") {
+                
+                try { var style = window.getComputedStyle(container, null); } 
+                catch (error) { var style = scrollbar.currentStyle; }
 
-            // Set up scrollbar (optional, will function without it)
+                var horizontal_padding = parseInt(style.paddingLeft) + parseInt(style.paddingRight);
+            }
+            
+            contentSize = (scrollingDirection == "vertical") ?
+                -((content.scrollHeight > container.scrollHeight) ? content.scrollHeight : container.scrollHeight) + container.offsetHeight :
+                -((content.scrollWidth > container.scrollWidth) ? content.scrollWidth : container.scrollWidth) + container.offsetWidth - horizontal_padding;
+
+
+            // Set up scrollbar
 
             scrollbar = container.getElementsByClassName(javaScript_scrollbar.classes.scrollbar)[0];
             scroller = container.getElementsByClassName(javaScript_scrollbar.classes.scroller)[0];
 
             if (scrollbar && scroller) {
-                
+
                 /* These complex do-dads give the height (or width) of the scrollbar without any borders or paddings or whatever. */
-                
-                if (scrollingDirection == "vertical") {
-                    try {
-                        scrollbarSize = parseInt(window.getComputedStyle(scrollbar, null).getPropertyValue('height')) - (scroller.offsetHeight);
-                    } catch(error) {
-                        scrollbarSize = parseInt(scrollbar.currentStyle.height) - (scroller.offsetHeight);
-                    }
-                } 
-                
-                else if (scrollingDirection == "horizontal") {
-                    try {
-                        scrollbarSize = parseInt(window.getComputedStyle(scrollbar, null).getPropertyValue('width')) - (scroller.offsetWidth);
-                    } catch(error) {
-                        scrollbarSize = parseInt(scrollbar.currentStyle.width) - (scroller.offsetWidth);
-                    }
+
+                try {
+                    var style = window.getComputedStyle(scrollbar, null);
+                } catch(error) {
+                    var style = scrollbar.currentStyle;
                 }
+
+                scrollbarSize = (scrollingDirection == "vertical") ? 
+                    parseInt(style.height,10) - scroller.offsetHeight : 
+                    parseInt(style.width,10) - scroller.offsetWidth;
 
             } else {
                 scrollbar = null;
@@ -186,10 +190,21 @@ var javaScript_scrollbar = {
         }
     },
 
+    check_errant_content: function() {
+        // This is an upcoming function that checks to see if content has been added to the scroll_content box, but wasn't placed inside the scrollable part. It will automatically move that content to the end of the scrollable box.
+    },
+
+    /*
+
+    There are three distinct methods of scrolling here: using the mousewheel, clicking and dragging the scrollbar, or dragging a finger across the screen (e.g. iOS or Android) They all use the same basics, but with some differences. The biggest point here is that the touch events have a glide associated with them. If the user swipes quickly, the content will gradually glide to a halt. This is set up and run by scroll_start and scroll_stop.
+
+    */
+
     scroll_start: function (event) {
-        if (!event && window.event) event = window.event; event.preventDefault();
 
         javaScript_scrollbar.setAppVariables(event);
+
+        javaScript_scrollbar.check_errant_content(event);
 
         if (event.type == "mousedown") {
             var scroller = javaScript_scrollbar.scroller,
@@ -197,6 +212,8 @@ var javaScript_scrollbar = {
                 scrollingDirection = javaScript_scrollbar.scrollingDirection;
 
             if (event.target == scroller || event.target == scrollbar) {
+
+                if (!event && window.event) event = window.event; event.preventDefault(); // Prevent selection while dragging scrollbar
 
                 if (javaScript_scrollbar.glideInterval != null) {
                     clearInterval(javaScript_scrollbar.glideInterval);
@@ -264,7 +281,6 @@ var javaScript_scrollbar = {
                 touchLengthOffset = event.touches[0].clientX;
             }
 
-
             if (event.target == scrollbar) {
                 scrollbarOffset = (scrollingDirection == "vertical") ?
                     scrollbar.getBoundingClientRect().top + (scroller.offsetHeight / 2) :
@@ -308,6 +324,7 @@ var javaScript_scrollbar = {
             document.removeEventListener("touchend", javaScript_scrollbar.scroll_stop, false);
             document.removeEventListener("touchcancel", javaScript_scrollbar.scroll_stop, false);
 
+            // If touchTime isn't null, set up a slow-down timer. (touchTime will be null if the touchEvent happened slowly)
             if (javaScript_scrollbar.touchTime != null) {
 
                 var scroller = javaScript_scrollbar.scroller,
@@ -328,10 +345,11 @@ var javaScript_scrollbar = {
                         javaScript_scrollbar.glideInterval == null;
                     } else {
 
-                        if (scrollingDirection == "vertical") contentPosition = content.offsetTop - (rate * repeatTime);
-                        else if (scrollingDirection == "horizontal") contentPosition = content.offsetLeft - (rate * repeatTime);
-                        scrollbarPosition = (contentPosition / contentSize) * scrollbarSize;
+                        var contentPosition = (scrollingDirection == "vertical") ? 
+                            (content.style.top) ? parseInt(content.style.top,10) - (rate * repeatTime) : -(rate * repeatTime) :
+                        (content.style.left) ? parseInt(content.style.left,10) - (rate * repeatTime) : -(rate * repeatTime);
 
+                        scrollbarPosition = (contentPosition / contentSize) * scrollbarSize;
 
                         if (contentPosition > 0) scrollbarPosition = 0, contentPosition = 0;
                         else if (contentPosition <= contentSize) scrollbarPosition = scrollbarSize, contentPosition = contentSize;
@@ -386,8 +404,7 @@ var javaScript_scrollbar = {
 
     },
     mousewheel_scroll: function (event) {
-        if (!event && window.event) event = window.event;
-        event.preventDefault();
+        if (!event && window.event) event = window.event; event.preventDefault();
 
         var scroller = javaScript_scrollbar.scroller,
             scrollbar = javaScript_scrollbar.scrollbar,
@@ -406,12 +423,16 @@ var javaScript_scrollbar = {
             delta = -event.detail / 2; // W3C
         }
 
-        var contentPosition = (scrollingDirection == "vertical") ?
-            content.offsetTop + (delta * 10) : content.offsetLeft + (delta * 10),
-            scrollbarPosition = (contentPosition / contentSize) * scrollbarSize;
+        var contentPosition = (scrollingDirection == "vertical") ? 
+            (content.style.top) ? parseInt(content.style.top,10) + (delta * 10) : (delta * 10) :
+        (content.style.left) ? parseInt(content.style.left,10) + (delta * 10) : (delta * 10);
 
-        if (contentPosition >= 0) scrollbarPosition = 0, contentPosition = 0;
-        else if (contentPosition <= contentSize) scrollbarPosition = scrollbarSize, contentPosition = contentSize;
+        var scrollbarPosition = (contentPosition / contentSize) * scrollbarSize;
+
+        if (contentPosition >= 0) 
+            scrollbarPosition = 0, contentPosition = 0;
+        else if (contentPosition <= contentSize) 
+            scrollbarPosition = scrollbarSize, contentPosition = contentSize;
 
         if (scrollingDirection == "vertical") {
             content.style.top = contentPosition + "px";

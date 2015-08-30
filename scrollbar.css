@@ -1,106 +1,64 @@
-/* Styling CSS -- this is only an example, change it however you please */
+/* Styling CSS /*
 
+The first section is the general styling of the scrollbox and bars. This is completely up to you. I have a default set that looks a bit like the basic iOS / Apple scrollbar. Change it! Rule the world!
+
+*/
+
+/* Set up the basic box in which all other things exist */
 .scroll_content {
     width: 325px;
     height: 400px;   
 
     font: 13px Arial, Helvetica, sans-serif;
-    
+
     border: 2px solid #a5a5a5;
     border-radius: 3px;
 
     margin: 40px;
-}
-
-.scrollbar {
-    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
-}
-.scroll_content:not(.horizontal) .scrollbar {
-    border-left: 1px solid #c9c9c9;
-}
-.scroll_content.horizontal .scrollbar {
-    border-top: 1px solid #c9c9c9;
-}
-
-.scroller {
-    background: rgb(193, 193, 193);
-
-    margin: auto;
-
-    border-radius: 6px;
-}
-.scroller:hover, .example .scroller:active {
-    background: rgb(125, 125, 125);
-}
-
-/* CSS for the content and scrollbar when vertical is specified (when horizontal is NOT specified) */
-.scroll_content:not(.horizontal) .scrollable {
-    top: 0px;
-    
-    width: 90%;
-    padding: 5px;
-}
-
-.scroll_content.no_scrollbar:not(.horizontal) .scrollable {
-    width: auto;
-    left: 0px; right: 0px;
-}
-
-.scroll_content:not(.horizontal) .scrollbar {
-    top: 0px;
-    bottom: 0px;
-
-    right: 0px;
-
-    width: 10px;
-}
-.scroll_content:not(.horizontal) .scroller {
-    left: 0px; 
-    right: 0px;
-
-    width: 80%;
-    height: 25%;
-}
-
-/* CSS for the content and scrollbar when horizontal is specified */
-.scroll_content.horizontal .scrollable {
-    height: 90%;
-    white-space: nowrap;
     padding: 10px;
 }
 
-.scroll_content.horizontal.no_scrollbar .scrollable {
-    height: auto;
-    top: 0px; left: 0px;
-}
+/* Gives the scrollbar an aura of mystery */
+.scrollbar { box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2); }
 
-.scroll_content.horizontal .scrollbar {
-    bottom: 0px;
+/* Styles the scroller with color, a rounded shape, and a hover state */
+.scroller { background: rgb(193, 193, 193); border-radius: 6px;}
+.scroller:hover, .example .scroller:active { background: rgb(125, 125, 125);}
 
-    left: 0px;
-    right: 0px;
-    
-    height: 10px;
-}
-.scroll_content.horizontal .scroller {
-    width: 25%;
-    height: 80%;
-    
-    top: 0px; 
-    bottom: 0px;
-}
+/* Adds a line to highlight the scrollbar */
+.scroll_content:not(.horizontal) .scrollbar { border-left: 1px solid #c9c9c9; }
+.scroll_content.horizontal .scrollbar { border-top: 1px solid #c9c9c9; }
 
-/* Base CSS (You probably shouldn't change this) */
-.scroll_content {
-    position: relative;
-    overflow: hidden;
-}
-.scrollable {
-    position: absolute;
-}
-.scrollbar {
-    position: absolute;
-}
-.scroller {
-    position: absolute;
-}
+/* Puts 1px of space between the side of the scrollbar and the scroller */
+.scroll_content:not(.horizontal) .scroller { margin-left: 1px; }
+.scroll_content.horizontal .scroller { margin-top: 1px; }
+
+
+/* Base Scrollbar CSS /*
+
+This CSS shifts the content around and sets default sizes for the content and the scrollbars.
+Feel free to change it, but you should probably know what you're doing if you do so.
+
+There are two sets of this CSS, one for the horizontal scrollbar and one for the vertical.
+
+Each set has three rules:
+1. Give scrollbar space to exist (unless told not to)
+2. Set the size for the scrollbar
+3. Set the size for the scroller
+
+*/
+
+.scroll_content:not(.horizontal):not(.no_scrollbar) .scrollable { width: 90%;}
+.scroll_content:not(.horizontal) .scrollbar { top: 0px; bottom: 0px; right: 0px; width: 10px; }
+.scroll_content:not(.horizontal) .scroller {width: 80%; height: 25%; }
+
+.scroll_content.horizontal:not(.no_scrollbar) .scrollable { height: 90%;}
+.scroll_content.horizontal .scrollbar { bottom: 0px; left: 0px; right: 0px; height: 10px; }
+.scroll_content.horizontal .scroller { width: 25%; height: 80%; }
+
+/* Base Positioning CSS -- (You probably shouldn't change this) */
+
+.scroll_content { position: relative; overflow: hidden; }
+.scrollable { position: relative; }
+.scrollbar { position: absolute; }
+.scroller { position: relative; }
